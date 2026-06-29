@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Finanzas Sole">
+<meta name="theme-color" content="#ffffff">
+<title>Finanzas Sole</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f5f4;
+    --bg3: #f0efed;
+    --text: #1a1a1a;
+    --text2: #6b6b67;
+    --text3: #a0a09a;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --info-bg: #e6f1fb;
+    --info: #185fa5;
+    --success-bg: #eaf3de;
+    --success: #3b6d11;
+    --warn-bg: #faeeda;
+    --warn: #854f0b;
+    --danger-bg: #fcebeb;
+    --danger: #a32d2d;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --jub: #1D9E75;
+    --viaje: #378ADD;
+    --emerg: #BA7517;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #262624;
+      --bg3: #2e2e2b;
+      --text: #e8e6e0;
+      --text2: #9c9a92;
+      --text3: #68665f;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.2);
+      --info-bg: #0c2d4a;
+      --info: #85b7eb;
+      --success-bg: #173404;
+      --success: #97c459;
+      --warn-bg: #412402;
+      --warn: #ef9f27;
+      --danger-bg: #2d0f0f;
+      --danger: #f09595;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+
+  .app-header { background: var(--bg); border-bottom: 0.5px solid var(--border); padding: 16px 20px 12px; position: sticky; top: 0; z-index: 10; }
+  .app-header h1 { font-size: 17px; font-weight: 600; }
+  .app-header p { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .nav-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 0.5px solid var(--border); display: flex; z-index: 20; padding-bottom: env(safe-area-inset-bottom); }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 4px 8px; border: none; background: transparent; color: var(--text3); cursor: pointer; font-size: 10px; gap: 3px; transition: color 0.15s; }
+  .nav-item i { font-size: 22px; }
+  .nav-item.active { color: var(--text); }
+  .nav-item.active i { color: #1D9E75; }
+
+  .screen { display: none; padding: 16px 16px 0; }
+  .screen.visible { display: block; }
+
+  .slbl { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; margin: 20px 0 8px; }
+  .slbl:first-child { margin-top: 0; }
+
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 10px; }
+
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  .field input[type=number], .field input[type=text] { width: 100%; padding: 11px 14px; font-size: 16px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); outline: none; }
+  .field input:focus { border-color: #1D9E75; }
+
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .cat-btn { padding: 10px 4px; font-size: 11px; border: 0.5px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; text-align: center; line-height: 1.4; transition: all 0.15s; }
+  .cat-btn i { display: block; font-size: 18px; margin-bottom: 3px; }
+  .cat-btn.sel { background: var(--info-bg); color: var(--info); border-color: var(--info); font-weight: 600; }
+
+  .medio-row { display: flex; gap: 6px; }
+  .medio-btn { flex: 1; padding: 10px 6px; font-size: 13px; border: 0.5px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; text-align: center; transition: all 0.15s; }
+  .medio-btn.sel { background: var(--success-bg); color: var(--success); border-color: var(--success); font-weight: 600; }
+
+  .submit-btn { width: 100%; padding: 15px; font-size: 16px; font-weight: 600; border: none; border-radius: var(--radius-lg); background: #1D9E75; color: #fff; cursor: pointer; margin-top: 12px; letter-spacing: 0.01em; }
+  .submit-btn:active { opacity: 0.85; transform: scale(0.99); }
+
+  .toast { display: none; background: var(--success-bg); color: var(--success); border: 0.5px solid var(--success); border-radius: var(--radius); padding: 12px 16px; font-size: 14px; text-align: center; margin-top: 10px; font-weight: 500; }
+
+  .recent-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 6px; }
+  .rcat { font-size: 14px; font-weight: 500; }
+  .rsub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .ramt { font-size: 15px; font-weight: 600; }
+  .del-btn { background: none; border: none; color: var(--text3); cursor: pointer; padding: 4px 6px; font-size: 16px; margin-left: 6px; }
+  .empty-state { text-align: center; padding: 32px 16px; color: var(--text3); font-size: 14px; line-height: 1.6; }
+  .empty-state i { font-size: 32px; display: block; margin-bottom: 10px; }
+
+  .month-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 12px; -webkit-overflow-scrolling: touch; }
+  .month-tabs::-webkit-scrollbar { display: none; }
+  .month-tab { padding: 6px 14px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--border); border-radius: 20px; background: transparent; color: var(--text2); cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .month-tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+  .ref-banner { background: var(--bg2); border-radius: var(--radius); padding: 10px 14px; font-size: 12px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+  .ref-banner i { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+  .resumen-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  .res-card { background: var(--bg2); border-radius: var(--radius); padding: 12px 14px; }
+  .res-lbl { font-size: 11px; color: var(--text2); margin-bottom: 4px; font-weight: 500; }
+  .res-val { font-size: 22px; font-weight: 700; }
+  .res-sub { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .res-val.green { color: var(--jub); }
+  .res-val.warn { color: var(--emerg); }
+  .res-val.red { color: var(--danger); }
+
+  .sem-item { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 6px; }
+  .sem-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .sem-name { font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .sem-name i { font-size: 16px; color: var(--text3); }
+  .sem-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .sem-amounts { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); margin-bottom: 7px; }
+  .sem-cur { font-weight: 600; font-size: 13px; }
+  .sem-bar-bg { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .sem-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+  .cfg-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .cfg-row:not(:last-child) { border-bottom: 0.5px solid var(--border); }
+  .cfg-lbl { font-size: 13px; color: var(--text2); }
+  .cfg-val { display: flex; align-items: center; gap: 6px; }
+  .cfg-val input[type=number] { width: 120px; padding: 6px 10px; font-size: 14px; font-weight: 600; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); text-align: right; outline: none; }
+  .cfg-unit { font-size: 12px; color: var(--text3); }
+  .slider-wrap { display: flex; align-items: center; gap: 10px; }
+  .slider-wrap input[type=range] { flex: 1; accent-color: #1D9E75; }
+  .slider-wrap span { font-size: 13px; font-weight: 600; min-width: 52px; text-align: right; color: var(--text); }
+
+  .meta-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 8px; }
+  .meta-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .meta-nombre { font-size: 15px; font-weight: 600; }
+  .meta-horizon { font-size: 12px; color: var(--text3); margin-top: 3px; }
+  .meta-icon-big { font-size: 24px; color: var(--text3); }
+  .meta-nums { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px; }
+  .meta-acum { font-size: 20px; font-weight: 700; }
+  .meta-acum.jub { color: var(--jub); }
+  .meta-acum.viaje { color: var(--viaje); }
+  .meta-acum.emerg { color: var(--emerg); }
+  .meta-obj { text-align: right; }
+  .meta-obj-lbl { font-size: 11px; color: var(--text3); }
+  .meta-obj-val { font-size: 14px; font-weight: 600; color: var(--text2); }
+  .meta-prog-bg { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px; }
+  .meta-prog-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+  .fill-jub { background: var(--jub); }
+  .fill-viaje { background: var(--viaje); }
+  .fill-emerg { background: var(--emerg); }
+  .meta-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--text3); }
+
+  .export-btn { width: 100%; padding: 13px; font-size: 14px; font-weight: 600; border: 0.5px solid var(--border2); border-radius: var(--radius-lg); background: transparent; color: var(--text); cursor: pointer; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .export-btn:active { background: var(--bg2); }
+  .disclaimer { font-size: 11px; color: var(--text3); line-height: 1.6; padding: 12px 0 20px; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>Finanzas Sole</h1>
+  <p id="headerSub">Hoy: <span id="todayDate"></span></p>
+</div>
+
+<!-- CARGA -->
+<div id="sc-carga" class="screen visible">
+  <div class="slbl">Nuevo gasto</div>
+  <div class="card">
+    <div class="field">
+      <label>Categoría</label>
+      <div class="cat-grid" id="catGrid"></div>
+    </div>
+    <div class="field">
+      <label>Descripción (opcional)</label>
+      <input type="text" id="desc" placeholder="Ej: Coto, colegio Nacho, farmacia...">
+    </div>
+    <div class="field">
+      <label>Monto ($)</label>
+      <input type="number" id="monto" placeholder="0" step="100" inputmode="numeric">
+    </div>
+    <div class="field">
+      <label>Medio de pago</label>
+      <div class="medio-row" id="medioRow"></div>
+    </div>
+  </div>
+  <button class="submit-btn" onclick="cargarGasto()">
+    <i class="ti ti-check"></i> Registrar gasto
+  </button>
+  <div class="toast" id="toast"><i class="ti ti-check"></i> Gasto registrado</div>
+
+  <div class="slbl">Últimos registros</div>
+  <div id="recentList"></div>
+</div>
+
+<!-- SEMÁFORO -->
+<div id="sc-semaforo" class="screen">
+  <div class="month-tabs" id="monthTabs"></div>
+  <div class="ref-banner" id="refBanner">
+    <i class="ti ti-info-circle"></i>
+    <span id="refBannerText"></span>
+  </div>
+  <div class="resumen-grid" id="resGrid"></div>
+  <div class="slbl">Por categoría</div>
+  <div id="semList"></div>
+</div>
+
+<!-- METAS -->
+<div id="sc-metas" class="screen">
+  <div class="slbl">Configuración</div>
+  <div class="card">
+    <div class="cfg-row">
+      <span class="cfg-lbl">Ingreso mensual</span>
+      <div class="cfg-val"><input type="number" id="cfIngreso" value="4000000" step="100000" inputmode="numeric" onchange="renderMetas()"><span class="cfg-unit">$</span></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-lbl">TC BNA venta</span>
+      <div class="cfg-val"><input type="number" id="cfTC" value="1420" step="10" inputmode="numeric" onchange="renderMetas()"><span class="cfg-unit">$/USD</span></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-lbl">Ahorro mensual</span>
+      <div class="cfg-val"><input type="number" id="cfAhorro" value="600000" step="50000" inputmode="numeric" onchange="renderMetas()"><span class="cfg-unit">$</span></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="cfg-row">
+      <span class="cfg-lbl">Meta emergencias</span>
+      <div class="cfg-val"><input type="number" id="cfEmerg" value="7000" step="500" inputmode="numeric" onchange="renderMetas()"><span class="cfg-unit">USD</span></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-lbl">Meta viaje anual</span>
+      <div class="cfg-val"><input type="number" id="cfViaje" value="3000" step="500" inputmode="numeric" onchange="renderMetas()"><span class="cfg-unit">USD</span></div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-lbl">Horizonte jubilación</span>
+      <div class="cfg-val">
+        <div class="slider-wrap">
+          <input type="range" id="cfHorJub" min="5" max="25" value="15" step="1" oninput="document.getElementById('vHorJub').textContent=this.value+' años';renderMetas()">
+          <span id="vHorJub">15 años</span>
+        </div>
+      </div>
+    </div>
+    <div class="cfg-row">
+      <span class="cfg-lbl">% ahorro → jubilación</span>
+      <div class="cfg-val">
+        <div class="slider-wrap">
+          <input type="range" id="cfPctJub" min="10" max="70" value="50" step="5" oninput="document.getElementById('vPctJub').textContent=this.value+'%';renderMetas()">
+          <span id="vPctJub">50%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="slbl">Estado de metas</div>
+  <div id="metaCards"></div>
+
+  <div class="slbl">Exportar</div>
+  <button class="export-btn" onclick="exportarCSV()">
+    <i class="ti ti-download"></i> Exportar gastos como CSV
+  </button>
+  <div class="disclaimer">
+    Los datos se guardan en este navegador. Usá "Exportar CSV" para copiarlos a tu Google Sheet.<br>
+    El semáforo compara el mes seleccionado contra el mes anterior cargado — sin promedios inventados.
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <button class="nav-item active" id="nav-carga" onclick="showScreen('carga')">
+    <i class="ti ti-plus"></i>Cargar
+  </button>
+  <button class="nav-item" id="nav-semaforo" onclick="showScreen('semaforo')">
+    <i class="ti ti-traffic-lights"></i>Semáforo
+  </button>
+  <button class="nav-item" id="nav-metas" onclick="showScreen('metas')">
+    <i class="ti ti-target"></i>Metas
+  </button>
+</nav>
+
+<script>
+const CATS = [
+  {id:'expensas', label:'Expensas',    icon:'ti-building'},
+  {id:'colegio',  label:'Colegio',     icon:'ti-school'},
+  {id:'super',    label:'Super',       icon:'ti-shopping-cart'},
+  {id:'transporte',label:'Transporte', icon:'ti-car'},
+  {id:'indument', label:'Ropa',        icon:'ti-hanger'},
+  {id:'salud',    label:'Salud',       icon:'ti-heartbeat'},
+  {id:'salidas',  label:'Salidas',     icon:'ti-glass-full'},
+  {id:'regalos',  label:'Regalos',     icon:'ti-gift'},
+  {id:'casa',     label:'Casa',        icon:'ti-home-2'},
+  {id:'capac',    label:'Capacit.',    icon:'ti-book'},
+  {id:'servicios',label:'Servicios',   icon:'ti-bolt'},
+  {id:'otros',    label:'Otros',       icon:'ti-dots'},
+];
+const MEDIOS = ['Tarjeta','Efectivo','Transferencia'];
+const MSHORT = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MLONG  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const NOW = new Date();
+const CUR_M = NOW.getMonth();
+const CUR_Y = NOW.getFullYear();
+
+document.getElementById('todayDate').textContent =
+  NOW.toLocaleDateString('es-AR', {day:'2-digit', month:'long', year:'numeric'});
+
+let selCat = null;
+let selMedio = 'Tarjeta';
+let semMonth = CUR_M;
+let semYear  = CUR_Y;
+
+function gastos() {
+  try { return JSON.parse(localStorage.getItem('sole_gastos_v2') || '[]'); }
+  catch(e) { return []; }
+}
+function saveG(g) { localStorage.setItem('sole_gastos_v2', JSON.stringify(g)); }
+function monthKey(m, y) { return y * 100 + m; }
+
+function totalesPorCat(m, y) {
+  const t = {};
+  CATS.forEach(c => t[c.id] = 0);
+  gastos().filter(x => x.mes === m && x.anio === y)
+          .forEach(x => { if (t[x.cat] !== undefined) t[x.cat] += x.monto; });
+  return t;
+}
+
+function prevMonth(m, y) {
+  return m === 0 ? {m:11, y:y-1} : {m:m-1, y};
+}
+
+function mesesConDatos() {
+  const keys = new Set(gastos().map(x => monthKey(x.mes, x.anio)));
+  return [...keys].sort((a,b)=>a-b).map(k => ({m: k % 100, y: Math.floor(k/100)}));
+}
+
+function showScreen(s) {
+  ['carga','semaforo','metas'].forEach(id => {
+    document.getElementById('sc-'+id).classList.toggle('visible', id===s);
+    document.getElementById('nav-'+id).classList.toggle('active', id===s);
+  });
+  if (s==='semaforo') renderSemaforo();
+  if (s==='metas')    renderMetas();
+}
+
+function buildCatGrid() {
+  document.getElementById('catGrid').innerHTML = CATS.map(c => `
+    <button class="cat-btn${selCat===c.id?' sel':''}" onclick="selCat='${c.id}';buildCatGrid()">
+      <i class="ti ${c.icon}"></i>${c.label}
+    </button>`).join('');
+}
+
+function buildMedioRow() {
+  document.getElementById('medioRow').innerHTML = MEDIOS.map(m => `
+    <button class="medio-btn${selMedio===m?' sel':''}" onclick="selMedio='${m}';buildMedioRow()">${m}</button>`).join('');
+}
+
+function cargarGasto() {
+  const monto = parseFloat(document.getElementById('monto').value);
+  const desc  = document.getElementById('desc').value.trim();
+  if (!selCat || !monto || monto <= 0) {
+    alert('Seleccioná una categoría e ingresá un monto.');
+    return;
+  }
+  const g = gastos();
+  g.unshift({ cat:selCat, desc, monto, medio:selMedio,
+               fecha:new Date().toISOString(), mes:CUR_M, anio:CUR_Y });
+  saveG(g);
+  document.getElementById('monto').value = '';
+  document.getElementById('desc').value  = '';
+  selCat = null;
+  buildCatGrid();
+  const t = document.getElementById('toast');
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2000);
+  renderRecent();
+}
+
+function renderRecent() {
+  const items = gastos().slice(0, 10);
+  const cm = Object.fromEntries(CATS.map(c => [c.id, c.label]));
+  const el = document.getElementById('recentList');
+  if (!items.length) {
+    el.innerHTML = `<div class="empty-state"><i class="ti ti-shopping-cart"></i>Sin registros todavía.<br>Cargá tu primer gasto arriba.</div>`;
+    return;
+  }
+  el.innerHTML = items.map((g, i) => `
+    <div class="recent-item">
+      <div>
+        <div class="rcat">${cm[g.cat]||g.cat}</div>
+        <div class="rsub">${g.medio}${g.desc?' · '+g.desc:''} · ${new Date(g.fecha).toLocaleDateString('es-AR',{day:'2-digit',month:'short'})}</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <span class="ramt">$${Math.round(g.monto).toLocaleString('es-AR')}</span>
+        <button class="del-btn" onclick="delG(${i})" aria-label="Eliminar"><i class="ti ti-x"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+function delG(i) {
+  const g = gastos(); g.splice(i, 1); saveG(g); renderRecent();
+}
+
+function getSem(cur, ref) {
+  if (ref === 0) return cur > 0 ? 'new' : 'empty';
+  const r = cur / ref;
+  return r <= 1.1 ? 'green' : r <= 1.4 ? 'yellow' : 'red';
+}
+const semCol   = {green:'#1D9E75', yellow:'#BA7517', red:'#A32D2D', new:'#378ADD', empty:'#a0a09a'};
+const semLabel = {green:'ok', yellow:'atención', red:'excedido', new:'nuevo', empty:'—'};
+
+function renderSemaforo() {
+  const meses = mesesConDatos();
+  const tabs  = document.getElementById('monthTabs');
+
+  if (!meses.length) {
+    tabs.innerHTML = '';
+    document.getElementById('refBanner').style.display = 'none';
+    document.getElementById('resGrid').innerHTML = '';
+    document.getElementById('semList').innerHTML =
+      `<div class="empty-state"><i class="ti ti-traffic-lights"></i>Cargá gastos en "Cargar" para ver el semáforo.<br>Desde el segundo mes, la app compara contra el mes anterior real.</div>`;
+    return;
+  }
+
+  let tabMeses = [...meses];
+  if (!meses.some(x => x.m===CUR_M && x.y===CUR_Y)) tabMeses.push({m:CUR_M, y:CUR_Y});
+  if (!tabMeses.some(x => x.m===semMonth && x.y===semYear)) {
+    semMonth = tabMeses[tabMeses.length-1].m;
+    semYear  = tabMeses[tabMeses.length-1].y;
+  }
+
+  tabs.innerHTML = tabMeses.map(({m,y}) => `
+    <button class="month-tab${m===semMonth&&y===semYear?' active':''}"
+      onclick="semMonth=${m};semYear=${y};renderSemaforo()">
+      ${MSHORT[m]}${y!==CUR_Y?' '+y:''}
+    </button>`).join('');
+
+  const prev     = prevMonth(semMonth, semYear);
+  const prevTiene = meses.some(x => x.m===prev.m && x.y===prev.y);
+
+  const banner = document.getElementById('refBanner');
+  const btxt   = document.getElementById('refBannerText');
+  banner.style.display = 'flex';
+  if (!prevTiene) {
+    btxt.textContent = `Sin datos de ${MSHORT[prev.m]} — el semáforo se activa cuando tenés al menos 2 meses cargados.`;
+  } else {
+    btxt.textContent = `Referencia: ${MLONG[prev.m]}${prev.y!==CUR_Y?' '+prev.y:''}. Verde ≤ +10%, amarillo hasta +40%, rojo > +40%.`;
+  }
+
+  const curTot = totalesPorCat(semMonth, semYear);
+  const refTot = prevTiene ? totalesPorCat(prev.m, prev.y) : {};
+  const curTotal = Object.values(curTot).reduce((a,b)=>a+b,0);
+  const refTotal = prevTiene ? Object.values(refTot).reduce((a,b)=>a+b,0) : 0;
+
+  const semG    = prevTiene ? getSem(curTotal, refTotal) : 'empty';
+  const scClass = semG==='green'?'green':semG==='red'?'red':semG==='yellow'?'warn':'';
+  const diffPct = refTotal > 0 ? Math.round((curTotal/refTotal-1)*100) : null;
+  const nReg    = gastos().filter(x=>x.mes===semMonth&&x.anio===semYear).length;
+
+  document.getElementById('resGrid').innerHTML = `
+    <div class="res-card">
+      <div class="res-lbl">${MLONG[semMonth]}</div>
+      <div class="res-val ${scClass}">$${Math.round(curTotal/1000)}K</div>
+      <div class="res-sub">${prevTiene?'ref: $'+Math.round(refTotal/1000)+'K':'primer mes'}</div>
+    </div>
+    <div class="res-card">
+      <div class="res-lbl">vs mes anterior</div>
+      <div class="res-val ${scClass}">${diffPct!==null?(diffPct>=0?'+':'')+diffPct+'%':'—'}</div>
+      <div class="res-sub">${nReg} registros</div>
+    </div>`;
+
+  const rows = CATS.map(c => {
+    const cur = curTot[c.id] || 0;
+    const ref = prevTiene ? (refTot[c.id] || 0) : 0;
+    if (cur===0 && ref===0) return '';
+    const sem = prevTiene ? getSem(cur, ref) : (cur>0 ? 'new' : 'empty');
+    const col = semCol[sem];
+    const barW = ref > 0 ? Math.min(Math.round(cur/ref*50), 100) : (cur>0?40:0);
+    const pct  = ref > 0 ? Math.round((cur/ref-1)*100) : null;
+    const pctLabel = !prevTiene ? 'sin referencia aún'
+                   : ref===0&&cur>0 ? 'nuevo'
+                   : pct===null ? '—'
+                   : (pct>=0?'+':'')+pct+'% vs '+MSHORT[prev.m];
+    const refLabel = prevTiene && ref>0 ? 'ref $'+Math.round(ref).toLocaleString('es-AR') : '';
+    return `<div class="sem-item">
+      <div class="sem-header">
+        <span class="sem-name"><i class="ti ${c.icon}"></i>${c.label}</span>
+        <div class="sem-dot" style="background:${col}" title="${semLabel[sem]}"></div>
+      </div>
+      <div class="sem-amounts">
+        <span class="sem-cur" style="color:${col}">$${Math.round(cur).toLocaleString('es-AR')}</span>
+        <span>${pctLabel}</span>
+        <span>${refLabel}</span>
+      </div>
+      <div class="sem-bar-bg"><div class="sem-bar-fill" style="width:${barW}%;background:${col}"></div></div>
+    </div>`;
+  }).filter(Boolean);
+
+  document.getElementById('semList').innerHTML = rows.length ? rows.join('')
+    : `<div class="empty-state"><i class="ti ti-plus"></i>Sin registros para este mes.</div>`;
+}
+
+function cv(id) { return parseFloat(document.getElementById(id).value) || 0; }
+function fmtU(n) { return 'USD '+Math.round(n).toLocaleString('es-AR'); }
+function fmtP(n) { return '$'+Math.round(n/1000)+'K'; }
+
+function renderMetas() {
+  const ingreso = cv('cfIngreso'), tc = cv('cfTC'), ahorro = cv('cfAhorro');
+  const emerg   = cv('cfEmerg'),   viaje = cv('cfViaje');
+  const horJub  = parseInt(document.getElementById('cfHorJub').value) || 15;
+  const pctJub  = parseInt(document.getElementById('cfPctJub').value) / 100 || 0.5;
+
+  const jubMesUSD   = ahorro * pctJub / tc;
+  const viajeMesUSD = ahorro * 0.20   / tc;
+  const emergMesUSD = ahorro * 0.30   / tc;
+  const metaJubUSD  = jubMesUSD * horJub * 12;
+
+  const acumJub   = 150000 / tc;
+  const acumEmerg = 0;
+  const acumViaje = 0;
+
+  const pctJ = Math.min(100, metaJubUSD > 0 ? Math.round(acumJub/metaJubUSD*100) : 0);
+  const pctE = Math.min(100, emerg > 0 ? Math.round(acumEmerg/emerg*100) : 0);
+  const pctV = Math.min(100, viaje > 0 ? Math.round(acumViaje/viaje*100) : 0);
+  const mesesE = emergMesUSD > 0 ? Math.ceil((emerg-acumEmerg)/emergMesUSD) : null;
+  const mesesV = viajeMesUSD > 0 ? Math.ceil((viaje-acumViaje)/viajeMesUSD) : null;
+
+  document.getElementById('metaCards').innerHTML = `
+    <div class="meta-card">
+      <div class="meta-top">
+        <div><div class="meta-nombre">Jubilación</div><div class="meta-horizon">Horizonte ${horJub} años · ${fmtP(ahorro*pctJub)}/mes</div></div>
+        <i class="ti ti-building-bank meta-icon-big"></i>
+      </div>
+      <div class="meta-nums">
+        <div><div style="font-size:11px;color:var(--text3)">Acumulado</div><div class="meta-acum jub">${fmtU(acumJub)}</div></div>
+        <div class="meta-obj"><div class="meta-obj-lbl">Meta proyectada</div><div class="meta-obj-val">${fmtU(metaJubUSD)}</div></div>
+      </div>
+      <div class="meta-prog-bg"><div class="meta-prog-fill fill-jub" style="width:${pctJ}%"></div></div>
+      <div class="meta-footer"><span>${pctJ}% completado</span><span>${fmtU(jubMesUSD)}/mes</span></div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-top">
+        <div><div class="meta-nombre">Fondo emergencias</div><div class="meta-horizon">Meta ${fmtU(emerg)} · ${fmtP(ahorro*0.30)}/mes</div></div>
+        <i class="ti ti-shield-check meta-icon-big"></i>
+      </div>
+      <div class="meta-nums">
+        <div><div style="font-size:11px;color:var(--text3)">Acumulado</div><div class="meta-acum emerg">${fmtU(acumEmerg)}</div></div>
+        <div class="meta-obj"><div class="meta-obj-lbl">Faltan</div><div class="meta-obj-val">${fmtU(emerg-acumEmerg)}</div></div>
+      </div>
+      <div class="meta-prog-bg"><div class="meta-prog-fill fill-emerg" style="width:${pctE}%"></div></div>
+      <div class="meta-footer"><span>${pctE}% completado</span><span>${mesesE?mesesE+' meses para completar':''}</span></div>
+    </div>
+    <div class="meta-card">
+      <div class="meta-top">
+        <div><div class="meta-nombre">Viajes</div><div class="meta-horizon">Meta anual ${fmtU(viaje)} · ${fmtP(ahorro*0.20)}/mes</div></div>
+        <i class="ti ti-plane meta-icon-big"></i>
+      </div>
+      <div class="meta-nums">
+        <div><div style="font-size:11px;color:var(--text3)">Acumulado</div><div class="meta-acum viaje">${fmtU(acumViaje)}</div></div>
+        <div class="meta-obj"><div class="meta-obj-lbl">Para llegar</div><div class="meta-obj-val">${mesesV?mesesV+' meses':'—'}</div></div>
+      </div>
+      <div class="meta-prog-bg"><div class="meta-prog-fill fill-viaje" style="width:${pctV}%"></div></div>
+      <div class="meta-footer"><span>${pctV}% completado</span><span>${fmtU(viajeMesUSD)}/mes</span></div>
+    </div>`;
+}
+
+function exportarCSV() {
+  const g = gastos();
+  if (!g.length) { alert('No hay gastos registrados para exportar.'); return; }
+  const cm = Object.fromEntries(CATS.map(c=>[c.id,c.label]));
+  const header = 'Fecha,Mes,Año,Categoría,Descripción,Monto,Medio de pago';
+  const rows = g.map(x => [
+    new Date(x.fecha).toLocaleDateString('es-AR'),
+    MLONG[x.mes], x.anio,
+    cm[x.cat]||x.cat,
+    '"'+(x.desc||'').replace(/"/g,'""')+'"',
+    x.monto,
+    x.medio
+  ].join(','));
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'gastos_sole_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+buildCatGrid();
+buildMedioRow();
+renderRecent();
+renderMetas();
+</script>
+</body>
+</html>
