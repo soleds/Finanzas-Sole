@@ -80,7 +80,7 @@
   .field input[type=number], .field input[type=text] { width: 100%; padding: 11px 14px; font-size: 16px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text); outline: none; }
   .field input:focus { border-color: #1D9E75; }
 
-  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .cat-btn { padding: 10px 4px; font-size: 11px; border: 0.5px solid var(--border); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; text-align: center; line-height: 1.4; transition: all 0.15s; }
   .cat-btn i { display: block; font-size: 18px; margin-bottom: 3px; }
   .cat-btn.sel { background: var(--info-bg); color: var(--info); border-color: var(--info); font-weight: 600; }
@@ -292,14 +292,22 @@ const CATS = [
   {id:'uniforme',  label:'Unif/Útiles', icon:'ti-backpack'},
   {id:'super',     label:'Super',       icon:'ti-shopping-cart'},
   {id:'almacen',   label:'Almacén',     icon:'ti-basket'},
+  {id:'panaderia', label:'Panadería',   icon:'ti-bread'},
+  {id:'carne',     label:'Carne',       icon:'ti-meat'},
+  {id:'pastas',    label:'Pastas',      icon:'ti-bowl'},
+  {id:'comidacasa',label:'Cda Casa',    icon:'ti-soup'},
+  {id:'limpieza',  label:'Limpieza',    icon:'ti-wash'},
   {id:'oficina',   label:'Cda Oficina', icon:'ti-coffee'},
   {id:'marygo',    label:'Mary Go',     icon:'ti-car'},
   {id:'nafta',     label:'Nafta',       icon:'ti-gas-station'},
   {id:'indument',  label:'Ropa',        icon:'ti-hanger'},
   {id:'salud',     label:'Salud',       icon:'ti-heartbeat'},
+  {id:'farmacia',  label:'Farmacia',    icon:'ti-pill'},
   {id:'salidas',   label:'Salidas',     icon:'ti-glass-full'},
+  {id:'salidachicos',label:'Sal Chicos',icon:'ti-ball-football'},
   {id:'regalos',   label:'Regalos',     icon:'ti-gift'},
   {id:'casa',      label:'Casa',        icon:'ti-home-2'},
+  {id:'ferreteria',label:'Ferretería',  icon:'ti-tools'},
   {id:'capac',     label:'Capacit.',    icon:'ti-book'},
   {id:'servicios', label:'Servicios',   icon:'ti-bolt'},
   {id:'otros',     label:'Otros',       icon:'ti-dots'},
